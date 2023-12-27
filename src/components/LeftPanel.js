@@ -9,13 +9,17 @@ import DownOutlined from "@ant-design/icons";
 import Input from "@mui/material/Input";
 import { TextField } from "@mui/material";
 import LimitTag from "./LimitTags";
-const Content1 = () => {
+
+const Content1 = (props) => {
+  const { addTask } = props;
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isDropdownVisible, setDropdownVisible] = useState(false);
-  const [selectedPriority, setSelectedPriority] = useState(null);
-  const [modalTitle, setModalTitle] = useState("");
   const [isAddTaskDisabled, setIsAddTaskDisabled] = useState(true);
   const [showLimitTag, setShowLimitTag] = useState(false);
+  const [newTask, setNewTask] = useState({
+    priority: null,
+    title: "",
+  });
 
   const handleButtonClick = () => {
     setShowLimitTag(true);
@@ -121,12 +125,12 @@ const Content1 = () => {
   };
 
   const handlePrioritySelect = (key) => {
-    setSelectedPriority(key);
+    setNewTask({ ...newTask, priority: key });
     closeDropdown();
   };
 
   const handleTitleChange = (e) => {
-    setModalTitle(e.target.value);
+    setNewTask({ ...newTask, title: e.target.value });
     setIsAddTaskDisabled(e.target.value.trim() === "");
   };
 
@@ -142,14 +146,14 @@ const Content1 = () => {
       <Button
         key="submit"
         type="primary"
-        onClick={handleCancel}
+        onClick={() => addTask(newTask)}
         style={{
           marginRight: 8,
           backgroundColor: "#F14040",
           color: "white",
           opacity: isAddTaskDisabled ? 0.5 : 1,
         }}
-        disabled={isAddTaskDisabled}
+        // disabled={isAddTaskDisabled}
       >
         Add Task
       </Button>
@@ -160,7 +164,6 @@ const Content1 = () => {
     <>
       <div>
         <div className="content1-container"> Welcome User</div>
-
         <div className="content1-container hover-effect" onClick={showModal}>
           <AddCircleIcon className="add-icon" />
           <span>Add Task</span>
@@ -170,7 +173,7 @@ const Content1 = () => {
         title={
           <Input
             placeholder="Enter the task"
-            value={modalTitle}
+            value={newTask.title}
             onChange={handleTitleChange}
             style={{
               borderBottom: "0",
@@ -204,7 +207,7 @@ const Content1 = () => {
                       ...item,
                       content: (
                         <div style={{ display: "flex", alignItems: "center" }}>
-                          {item.key === selectedPriority && (
+                          {item.key === newTask.priority && (
                             <CheckCircleSharpIcon
                               style={{
                                 marginRight: 8,
@@ -231,11 +234,11 @@ const Content1 = () => {
                     }}
                     onClick={toggleDropdown}
                   >
-                    {selectedPriority ? (
+                    {newTask.priority ? (
                       <>
                         <span>
                           {
-                            items.find((item) => item.key === selectedPriority)
+                            items.find((item) => item.key === newTask.priority)
                               .label
                           }
                         </span>
@@ -250,7 +253,6 @@ const Content1 = () => {
                 </Dropdown>
               </Space>
             </Space>
-
             <Button onClick={handleButtonClick}> Add Label</Button>
           </Flex>
         </div>

@@ -1,21 +1,25 @@
-import React from "react";
-import Content1 from "./Content1";
-import Content2 from "./Content2";
+import React, { useState } from "react";
+import LeftPanel from "./LeftPanel";
+import RightPanel from "./RightPanel";
 
 const MainPage = () => {
+  const [tasks, setTasks] = useState([]);
+
+  const addTask = (data) => {
+    setTasks(data);
+  };
+
   return (
-    <React.Fragment>
-      <section>
-        <div className="layout">
-          <div className="content1">
-            <Content1 />
-          </div>
-          <div className="content2 centered">
-            <Content2 />
-          </div>
+    <section>
+      <div className="layout">
+        <div className="content1">
+          <LeftPanel addTask={addTask} />
         </div>
-      </section>
-    </React.Fragment>
+        <div className="content2 centered">
+          <RightPanel tasks={tasks} />
+        </div>
+      </div>
+    </section>
   );
 };
 
