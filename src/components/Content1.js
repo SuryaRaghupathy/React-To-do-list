@@ -9,17 +9,20 @@ import DownOutlined from "@ant-design/icons";
 import Input from "@mui/material/Input";
 import { TextField } from "@mui/material";
 import LimitTag from "./LimitTags";
-const Content1 = () => {
+import { useEffect } from "react";
+const Content1 = ({ passingObject }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isDropdownVisible, setDropdownVisible] = useState(false);
   const [selectedPriority, setSelectedPriority] = useState(null);
   const [modalTitle, setModalTitle] = useState("");
+  const [newSelectedItems, setNewSelectedItems] = useState([]);
   const [isAddTaskDisabled, setIsAddTaskDisabled] = useState(true);
   const [showLimitTag, setShowLimitTag] = useState(false);
+  const [displayTask, setDisplayTask] = useState({});
+  const [textFieldValue, setTextFieldValue] = useState("");
 
   const handleButtonClick = () => {
     setShowLimitTag(true);
-    // Add any other logic you want to perform on button click
   };
   const items = [
     {
@@ -129,7 +132,36 @@ const Content1 = () => {
     setModalTitle(e.target.value);
     setIsAddTaskDisabled(e.target.value.trim() === "");
   };
+  useEffect(() => {
+    console.log(displayTask);
 
+    passingObject(displayTask);
+  }, [displayTask, passingObject]);
+
+  const handleInputChange = (event) => {
+    setTextFieldValue(event.target.value);
+  };
+
+  const handleChildData = (newSelectedItems) => {
+    // Do something with the updated array in the parent component
+    console.log("Received from child:", newSelectedItems);
+    setNewSelectedItems(newSelectedItems);
+  };
+
+  const handleDisplayTask = (newSelectedItems) => {
+    console.log(newSelectedItems);
+    setNewSelectedItems(newSelectedItems);
+    // Update displaytask with the current modalTitle value
+    setDisplayTask({
+      title: modalTitle,
+      Description: textFieldValue,
+      labels: newSelectedItems,
+    });
+
+    setModalTitle("");
+    setTextFieldValue("");
+    setIsModalVisible(false);
+  };
   const modalFooter = (
     <div>
       <Button
@@ -142,7 +174,7 @@ const Content1 = () => {
       <Button
         key="submit"
         type="primary"
-        onClick={handleCancel}
+        onClick={() => handleDisplayTask(newSelectedItems)}
         style={{
           marginRight: 8,
           backgroundColor: "#F14040",
@@ -191,8 +223,10 @@ const Content1 = () => {
           style={{ width: "400px" }}
           inputProps={{ maxLength: 50 }}
           InputProps={{ disableUnderline: true }}
+          value={textFieldValue}
+          onChange={handleInputChange}
         />
-        {showLimitTag && <LimitTag />}
+        {showLimitTag && <LimitTag onChildData={handleChildData} />}
         <div style={{ marginTop: "20px" }}>
           <Flex gap="small" wrap="wrap">
             <Button>Today</Button>
@@ -208,7 +242,7 @@ const Content1 = () => {
                             <CheckCircleSharpIcon
                               style={{
                                 marginRight: 8,
-                                color: "green", // Change color as needed
+                                color: "green",
                               }}
                             />
                           )}

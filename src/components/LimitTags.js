@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Select } from "antd";
 
-const LimitTag = () => {
+const LimitTag = ({ onChildData }) => {
   const [selectedItems, setSelectedItems] = useState([]);
   const [inputValue, setInputValue] = useState("");
 
@@ -11,8 +11,15 @@ const LimitTag = () => {
 
   const handleInputConfirm = () => {
     if (inputValue) {
-      setSelectedItems([...selectedItems, inputValue]);
-      setInputValue(""); // Clear the input after adding the label
+      setSelectedItems((prevSelectedItems) => {
+        const newSelectedItems = [...prevSelectedItems, inputValue];
+
+        onChildData(newSelectedItems);
+        return newSelectedItems;
+      });
+
+      // Clear the input after adding the label
+      setInputValue("");
     }
   };
 
